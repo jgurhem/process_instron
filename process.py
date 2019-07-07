@@ -62,11 +62,13 @@ def processRawFile(file, nbCoeff):
 		aire.append(tmp)
 
 
-	pente = 0
+	KBond = 0
+	KBond2 = 0
 	yb = 0
 	ya = 0
 	xa = 0
 	xb = 0
+	incr = 0
 	for i in range(len(lissage)):
 		if PPmax[i] > 30:
 			yb = lissage[i]
@@ -77,9 +79,55 @@ def processRawFile(file, nbCoeff):
 		if PPmax[i] > 50:
 			ya = lissage[i]
 			xa = depla[i]
+			incr = i
 			break
 
-	pente = (yb - ya) / (xb - xa)
+	KBond = (yb - ya) / (xb - xa)
+
+	yb = 0
+	xb = 0
+
+	for i in range(incr, len(lissage)):
+		if PPmax[i] < 50:
+			ya = lissage[i]
+			xa = depla[i]
+			incr = i
+			break
+
+	for i in range(incr, len(lissage)):
+		if PPmax[i] < 30:
+			yb = lissage[i]
+			xb = depla[i]
+			break
+
+	KBond2 = (yb - ya) / (xb - xa)
+	KBond2_p = ya - xa * KBond2
+
+
+	KRes = 0
+	yb = 0
+	ya = 0
+	xa = 0
+	xb = 0
+	incr = 0
+
+	for i in range(len(lissage)):
+		if depla[i] > 5:
+			ya = lissage[i]
+			xa = depla[i]
+			incr = i
+			break
+
+	for i in range(incr, len(lissage)):
+		if depla[i] > 8:
+			yb = lissage[i]
+			xb = depla[i]
+			incr = i
+			break
+
+	KRes = (yb - ya) / (xb - xa)
+	KRes_p = ya - xa * KRes
+	PRes = KBond2 * (KBond2_p - KRes_p) / (KRes - KBond2) + KBond2_p
 
 	d1=0
 	d2=0
@@ -128,9 +176,12 @@ def processRawFile(file, nbCoeff):
 		aire2 += aire[i]
 
 	fout = open(os.path.splitext(file)[0] + ".csv", 'w')
-	
+
 	fout.write('PMax;' + str(lissageMax) + "\n")
-	fout.write('Kbond;' + str(pente) + "\n")
+	fout.write('Kbond;' + str(KBond) + "\n")
+	fout.write('Kbond2;' + str(KBond2) + "\n")
+	fout.write('KRes;' + str(KRes) + "\n")
+	fout.write('PRes;' + str(PRes) + "\n")
 	fout.write('aire1;' + str(aire1) + "\n")
 	fout.write('aire2;' + str(aire2) + "\n")
 
