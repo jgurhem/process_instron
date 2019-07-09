@@ -10,8 +10,6 @@ import matplotlib.pyplot as plt
 import math
 
 def main():
-  #processRawFile("ec0.5ac0.1 1D.is_tens.raw", 6)
-  #processRawFile("ec0.5ac0.1 1G.is_tens.raw", 6)
   nbCoeff = 6
   #directory = '.' #directory from which the script is executed
   directory = 'raws'
@@ -21,8 +19,7 @@ def main():
   make_curve(data_curves, directory)
 
 def processRawFile(file, nbCoeff, data_curves):
-  data = np.genfromtxt( file , usecols =(1, 2), delimiter=";", skip_header=65, encoding=None, dtype=None)
-  float(data[1][1].replace(',','.'))
+  data = np.genfromtxt( file , usecols =(1, 2), delimiter=";", skip_header=65, encoding="latin1", dtype=None)
 
   depla = []
   charge = []
@@ -253,8 +250,10 @@ def make_curve(data_curves, directory):
   plt.savefig(fig_name)
   plt.close()
 
-  param_keys=data_curves[data_curves.keys()[0]][2].keys()
-  units = data_curves[data_curves.keys()[0]][3]
+  data_curves_keys = list(data_curves.keys())
+  if len(data_curves_keys) < 2: return None
+  param_keys = list(data_curves[data_curves_keys[0]][2].keys())
+  units = data_curves[data_curves_keys[0]][3]
   s_ = len(param_keys)
   for k1 in range(s_):
     for k2 in range(k1 + 1, s_):
