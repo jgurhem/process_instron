@@ -256,7 +256,7 @@ def make_curve(data_curves, directory):
   units = data_curves[data_curves_keys[0]][3]
   s_ = len(param_keys)
   for k1 in range(s_):
-    for k2 in range(k1 + 1, s_):
+    for k2 in range(s_):
       v1 = []
       v2 = []
       for i in data_curves:
