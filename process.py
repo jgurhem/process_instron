@@ -4,10 +4,7 @@
 import numpy as np
 import os, fnmatch
 import sys
-import matplotlib as mpl
-mpl.use('Agg')
-import matplotlib.pyplot as plt
-import math
+from core.curves import make_curve
 
 def main():
   nbCoeff = 6
@@ -222,84 +219,5 @@ def processRawFile(file, nbCoeff, data_curves):
     fout.write('{};{};{};{};{};{}\n'.format(depla[i], charge[i], chargeN[i], lissage[i], PPmax[i], aire[i]))
   fout.close()
   data_curves[file] = (depla, lissage, computed_params, units)
-
-def compute_correlation(x, y):
-  if len(x) != len(y):
-    raise Error
-  s_ = len(x)
-  mean_x = 0
-  mean_y = 0
-  for i in range(s_):
-    mean_x += x[i]
-    mean_y += y[i]
-  mean_x /= s_
-  mean_y /= s_
-
-  sigma_x = 0
-  sigma_y = 0
-  for i in range(s_):
-    sigma_x += (x[i] - mean_x) * (x[i] - mean_x)
-    sigma_y += (y[i] - mean_y) * (y[i] - mean_y)
-  sigma_x = math.sqrt(sigma_x / s_)
-  sigma_y = math.sqrt(sigma_y / s_)
-
-  sigma_xy = 0
-  for i in range(s_):
-    sigma_xy += (x[i] - mean_x) * (y[i] - mean_y)
-  sigma_xy /= s_
-  r = sigma_xy / sigma_x / sigma_y
-  return r * r
-
-
-def make_curve(data_curves, directory):
-  fig = plt.figure()
-  ax = fig.gca()
-  for i in data_curves:
-    s_ = min(len(data_curves[i][0]), len(data_curves[i][1]))
-    ax.plot(data_curves[i][0][0:s_], data_curves[i][1][0:s_], label=i)
-  #plt.legend()
-  fig_name = directory + "/fig.pdf"
-  if os.path.isfile(fig_name):
-   os.remove(fig_name)
-  plt.savefig(fig_name)
-  plt.close()
-
-  data_curves_keys = list(data_curves.keys())
-  if len(data_curves_keys) < 2: return None
-  param_keys = list(data_curves[data_curves_keys[0]][2].keys())
-  units = data_curves[data_curves_keys[0]][3]
-  s_ = len(param_keys)
-  for k1 in range(s_):
-    for k2 in range(s_):
-      v1 = []
-      v2 = []
-      vr1 = []
-      vr2 = []
-      vb1 = []
-      vb2 = []
-      for i in data_curves:
-        v1.append(data_curves[i][2][param_keys[k1]])
-        v2.append(data_curves[i][2][param_keys[k2]])
-        if "%" in i:
-          vr1.append(data_curves[i][2][param_keys[k1]])
-          vr2.append(data_curves[i][2][param_keys[k2]])
-        else:
-          vb1.append(data_curves[i][2][param_keys[k1]])
-          vb2.append(data_curves[i][2][param_keys[k2]])
-      corr = compute_correlation(v1, v2)
-      print(param_keys[k1], " - ", param_keys[k2], corr)
-      fig = plt.figure()
-      ax = fig.gca()
-      title = param_keys[k1] + " - " + param_keys[k2]
-      ax.scatter(vr1, vr2, color="red")
-      ax.scatter(vb1, vb2, color="blue")
-      plt.xlabel(param_keys[k1] + " (" + units[param_keys[k1]] + ")")
-      plt.ylabel(param_keys[k2] + " (" + units[param_keys[k2]] + ")")
-      plt.title(title + "(correlation = " + str(corr) + ")")
-      fig_name = directory + "/" + title + ".pdf"
-      if os.path.isfile(fig_name):
-        os.remove(fig_name)
-      plt.savefig(fig_name)
-      plt.close()
 
 main()
