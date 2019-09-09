@@ -5,6 +5,7 @@ import numpy as np
 import os, fnmatch
 import sys
 from core.curves import make_curve
+from core.compute_params import find_point
 
 def main():
   nbCoeff = 6
@@ -63,72 +64,20 @@ def processRawFile(file, nbCoeff, data_curves):
     aire.append(tmp)
 
 
-  KBond = 0
-  KDbond = 0
-  yb = 0
-  ya = 0
-  xa = 0
-  xb = 0
-  incr = 0
-  for i in range(len(lissage)):
-    if PPmax[i] > 30:
-      yb = lissage[i]
-      xb = depla[i]
-      break
+  ra = find_point(0, len(lissage), lissage, depla, (lambda i: PPmax[i] > 50))
+  rb = find_point(0, len(lissage), lissage, depla, (lambda i: PPmax[i] > 30))
+  KBond = (rb["y"] - ra["y"]) / (rb["x"] - ra["x"])
 
-  for i in range(len(lissage)):
-    if PPmax[i] > 50:
-      ya = lissage[i]
-      xa = depla[i]
-      incr = i
-      break
-
-  KBond = (yb - ya) / (xb - xa)
-
-  yb = 0
-  xb = 0
-
-  for i in range(incr, len(lissage)):
-    if PPmax[i] < 50:
-      ya = lissage[i]
-      xa = depla[i]
-      incr = i
-      break
-
-  for i in range(incr, len(lissage)):
-    if PPmax[i] < 30:
-      yb = lissage[i]
-      xb = depla[i]
-      break
-
-  KDbond = (yb - ya) / (xb - xa)
-  KDbond_p = ya - xa * KDbond
+  ra = find_point(ra["index"], len(lissage), lissage, depla, (lambda i: PPmax[i] < 50))
+  rb = find_point(ra["index"], len(lissage), lissage, depla, (lambda i: PPmax[i] < 30))
+  KDbond = (rb["y"] - ra["y"]) / (rb["x"] - ra["x"])
+  KDbond_p = ra["y"] - ra["x"] * KDbond
   KDbond_y0 = - KDbond_p / KDbond
 
-
-  KRes = 0
-  yb = 0
-  ya = 0
-  xa = 0
-  xb = 0
-  incr = 0
-
-  for i in range(len(lissage)):
-    if depla[i] > 5:
-      ya = lissage[i]
-      xa = depla[i]
-      incr = i
-      break
-
-  for i in range(incr, len(lissage)):
-    if depla[i] > 8:
-      yb = lissage[i]
-      xb = depla[i]
-      incr = i
-      break
-
-  KRes = (yb - ya) / (xb - xa)
-  KRes_p = ya - xa * KRes
+  ra = find_point(0, len(lissage), lissage, depla, (lambda i: depla[i] > 5))
+  rb = find_point(ra["index"], len(lissage), lissage, depla, (lambda i: depla[i] > 8))
+  KRes = (rb["y"] - ra["y"]) / (rb["x"] - ra["x"])
+  KRes_p = ra["y"] - ra["x"] * KRes
   PRes = KDbond * (KDbond_p - KRes_p) / (KRes - KDbond) + KDbond_p
 
   d1=0
