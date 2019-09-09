@@ -103,6 +103,7 @@ def processRawFile(file, nbCoeff, data_curves):
 
   KDbond = (yb - ya) / (xb - xa)
   KDbond_p = ya - xa * KDbond
+  KDbond_y0 = - KDbond_p / KDbond
 
 
   KRes = 0
@@ -181,6 +182,7 @@ def processRawFile(file, nbCoeff, data_curves):
   fout.write('PMax;' + str(PMax) + "\n")
   fout.write('Kbond;' + str(KBond) + "\n")
   fout.write('Kdebond;' + str(KDbond) + "\n")
+  fout.write('Kdebond_y0;' + str(KDbond_y0) + "\n")
   fout.write('KRes;' + str(KRes) + "\n")
   fout.write('PRes;' + str(PRes) + "\n")
   fout.write('aire1;' + str(aire1) + "\n")
