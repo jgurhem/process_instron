@@ -133,6 +133,13 @@ def processRawFile(file, nbCoeff, data_curves):
       depla0 = depla[i]
       break
 
+  LG = depla0 - KDbond_y0
+  ra = find_point(0, len(lissage), lissage, depla, (lambda i: depla[i] > 0.3 * LG))
+  rb = find_point(ra["index"], len(lissage), lissage, depla, (lambda i: depla[i] > 0.5 * LG))
+  nKRes = (rb["y"] - ra["y"]) / (rb["x"] - ra["x"])
+  nKRes_p = ra["y"] - ra["x"] * nKRes
+  nPRes = KDbond * (KDbond_p - nKRes_p) / (nKRes - KDbond) + KDbond_p
+
   fout = open(os.path.splitext(file)[0] + ".csv", 'w')
 
   fout.write('PMax;' + str(PMax) + "\n")
@@ -140,9 +147,11 @@ def processRawFile(file, nbCoeff, data_curves):
   fout.write('Kdebond;' + str(KDbond) + "\n")
   fout.write('Kdebond_y0;' + str(KDbond_y0) + "\n")
   fout.write('depla0;' + str(depla0) + "\n")
-  fout.write('LG;' + str(depla0 - KDbond_y0) + "\n")
+  fout.write('LG;' + str(LG) + "\n")
   fout.write('KRes;' + str(KRes) + "\n")
   fout.write('PRes;' + str(PRes) + "\n")
+  fout.write('nKRes;' + str(nKRes) + "\n")
+  fout.write('nPRes;' + str(nPRes) + "\n")
   fout.write('aire1;' + str(aire1) + "\n")
   fout.write('aire2;' + str(aire2) + "\n")
   computed_params = dict()
@@ -151,6 +160,8 @@ def processRawFile(file, nbCoeff, data_curves):
   computed_params["Kdebond"] = KDbond
   computed_params["KRes"] = KRes
   computed_params["PRes"] = PRes
+  computed_params["nKRes"] = nKRes
+  computed_params["nPRes"] = nPRes
   computed_params["aire1"] = aire1
   computed_params["aire2"] = aire2
 
@@ -160,6 +171,8 @@ def processRawFile(file, nbCoeff, data_curves):
   units["Kdebond"] = "N/mm"
   units["KRes"] = "N/mm"
   units["PRes"] = "N"
+  units["nKRes"] = "N/mm"
+  units["nPRes"] = "N"
   units["aire1"] = "mm*mm"
   units["aire2"] = "mm*mm"
 
