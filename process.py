@@ -43,6 +43,7 @@ def processRawFile(file, nbCoeff, data_curves):
     div += i * 2
 
   PMax = 0;
+  lissage_mean = 0
   for i in range(nbCoeff, len(depla) - nbCoeff):
     tmp = 0
     for j in range(1, nbCoeff+1):
@@ -52,6 +53,8 @@ def processRawFile(file, nbCoeff, data_curves):
     if tmp > PMax:
       PMax = tmp
     lissage.append(tmp)
+    lissage_mean += tmp
+  lissage_mean /= len(lissage)
 
 
   for i in range(nbCoeff, len(lissage)):
@@ -177,12 +180,21 @@ def processRawFile(file, nbCoeff, data_curves):
   for i in range(borne2, borne3):
     aire2 += aire[i]
 
+
+  depla0=0
+  for i in range(50, len(lissage)):
+    if lissage[i] < 0.05 * lissage_mean:
+      depla0 = depla[i]
+      break
+
   fout = open(os.path.splitext(file)[0] + ".csv", 'w')
 
   fout.write('PMax;' + str(PMax) + "\n")
   fout.write('Kbond;' + str(KBond) + "\n")
   fout.write('Kdebond;' + str(KDbond) + "\n")
   fout.write('Kdebond_y0;' + str(KDbond_y0) + "\n")
+  fout.write('depla0;' + str(depla0) + "\n")
+  fout.write('LG;' + str(depla0 - KDbond_y0) + "\n")
   fout.write('KRes;' + str(KRes) + "\n")
   fout.write('PRes;' + str(PRes) + "\n")
   fout.write('aire1;' + str(aire1) + "\n")
