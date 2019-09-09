@@ -261,15 +261,26 @@ def make_curve(data_curves, directory):
     for k2 in range(s_):
       v1 = []
       v2 = []
+      vr1 = []
+      vr2 = []
+      vb1 = []
+      vb2 = []
       for i in data_curves:
         v1.append(data_curves[i][2][param_keys[k1]])
         v2.append(data_curves[i][2][param_keys[k2]])
+        if "%" in i:
+          vr1.append(data_curves[i][2][param_keys[k1]])
+          vr2.append(data_curves[i][2][param_keys[k2]])
+        else:
+          vb1.append(data_curves[i][2][param_keys[k1]])
+          vb2.append(data_curves[i][2][param_keys[k2]])
       corr = compute_correlation(v1, v2)
       print(param_keys[k1], " - ", param_keys[k2], corr)
       fig = plt.figure()
       ax = fig.gca()
       title = param_keys[k1] + " - " + param_keys[k2]
-      ax.scatter(v1, v2)
+      ax.scatter(vr1, vr2, color="red")
+      ax.scatter(vb1, vb2, color="blue")
       plt.xlabel(param_keys[k1] + " (" + units[param_keys[k1]] + ")")
       plt.ylabel(param_keys[k2] + " (" + units[param_keys[k2]] + ")")
       plt.title(title + "(correlation = " + str(corr) + ")")
