@@ -41,6 +41,7 @@ def processRawFile(file, nbCoeff, data_curves):
     div += i * 2
 
   PMax = 0;
+  PMax_index = 0
   lissage_mean = 0
   for i in range(nbCoeff, len(depla) - nbCoeff):
     tmp = 0
@@ -50,6 +51,7 @@ def processRawFile(file, nbCoeff, data_curves):
     tmp = tmp/div
     if tmp > PMax:
       PMax = tmp
+      PMax_index = i
     lissage.append(tmp)
     lissage_mean += tmp
   lissage_mean /= len(lissage)
@@ -128,8 +130,8 @@ def processRawFile(file, nbCoeff, data_curves):
 
 
   depla0=0
-  for i in range(50, len(lissage)):
-    if lissage[i] < 0.05 * lissage_mean:
+  for i in range(PMax_index, len(lissage)):
+    if lissage[i] < 0.07 * lissage_mean:
       depla0 = depla[i]
       break
 
