@@ -136,8 +136,8 @@ def processRawFile(file, nbCoeff, data_curves):
       break
 
   LG = depla0 - KDbond_y0
-  ra = find_point(0, len(lissage), lissage, depla, (lambda i: depla[i] > 0.3 * LG))
-  rb = find_point(ra["index"], len(lissage), lissage, depla, (lambda i: depla[i] > 0.5 * LG))
+  ra = find_point(0, len(lissage), lissage, depla, (lambda i: depla[i] > KDbond_y0 + 0.3 * LG))
+  rb = find_point(ra["index"], len(lissage), lissage, depla, (lambda i: depla[i] > KDbond_y0 + 0.5 * LG))
   nKRes = (rb["y"] - ra["y"]) / (rb["x"] - ra["x"])
   nKRes_p = ra["y"] - ra["x"] * nKRes
   nPRes = KDbond * (KDbond_p - nKRes_p) / (nKRes - KDbond) + KDbond_p
