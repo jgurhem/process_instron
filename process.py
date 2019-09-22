@@ -9,8 +9,8 @@ from core.compute_params import find_point
 
 def main():
   nbCoeff = 6
-  #directory = '.' #directory from which the script is executed
-  directory = 'raws'
+  directory = '.' #directory from which the script is executed
+  #directory = 'raws'
   data_curves = dict()
   for file in fnmatch.filter(os.listdir(directory), '*.raw'):
     processRawFile(directory + "/" + file, nbCoeff, data_curves)
@@ -128,12 +128,7 @@ def processRawFile(file, nbCoeff, data_curves):
   for i in range(borne2, borne3):
     aire2 += aire[i]
 
-
-  depla0=0
-  for i in range(PMax_index, len(lissage)):
-    if lissage[i] < 0.07 * lissage_mean:
-      depla0 = depla[i]
-      break
+  depla0 = float(input("depla0 for" + file + " ? "))
 
   LG = depla0 - KDbond_y0
   ra = find_point(0, len(lissage), lissage, depla, (lambda i: depla[i] > KDbond_y0 + 0.3 * LG))
