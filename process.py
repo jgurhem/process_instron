@@ -55,7 +55,6 @@ def processRawFile(file, nbCoeff, data_curves, param_file_data):
 
   PMax = 0;
   PMax_index = 0
-  lissage_mean = 0
   for i in range(nbCoeff, len(depla) - nbCoeff):
     tmp = 0
     for j in range(1, nbCoeff+1):
@@ -66,8 +65,6 @@ def processRawFile(file, nbCoeff, data_curves, param_file_data):
       PMax = tmp
       PMax_index = i
     lissage.append(tmp)
-    lissage_mean += tmp
-  lissage_mean /= len(lissage)
 
 
   for i in range(nbCoeff, len(lissage)):
