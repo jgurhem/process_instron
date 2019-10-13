@@ -4,19 +4,32 @@
 import numpy as np
 import os, fnmatch
 import sys
+import csv
 from core.curves import make_curve
 from core.compute_params import find_point
 
 def main():
+  if len(sys.argv) != 3:
+    print("Usage : ")
+    print("py", sys.argv[0], "directory parameters_file")
+    sys.exit(0)
   nbCoeff = 6
-  directory = '.' #directory from which the script is executed
-  #directory = 'raws'
+  directory = sys.argv[1] #directory from which the script is executed
   data_curves = dict()
   for file in fnmatch.filter(os.listdir(directory), '*.raw'):
-    processRawFile(directory + "/" + file, nbCoeff, data_curves)
+    with open(sys.argv[2]) as csv_param_file:
+      csv_reader = csv.reader(csv_param_file, delimiter=';')
+      param_file_data = None
+      for row in csv_reader:
+        if row[0] == file:
+          param_file_data = row
+      if param_file_data != None:
+        processRawFile(directory + "/" + file, nbCoeff, data_curves, param_file_data)
+      else:
+        print("File", file, "cannot be processed since there is no corresponding entry in", sys.argv[2])
   make_curve(data_curves, directory)
 
-def processRawFile(file, nbCoeff, data_curves):
+def processRawFile(file, nbCoeff, data_curves, param_file_data):
   data = np.genfromtxt( file , usecols =(1, 2), delimiter=";", skip_header=65, encoding="latin1", dtype=None)
 
   depla = []
@@ -128,7 +141,7 @@ def processRawFile(file, nbCoeff, data_curves):
   for i in range(borne2, borne3):
     aire2 += aire[i]
 
-  depla0 = float(input("depla0 for" + file + " ? "))
+  depla0 = float(param_file_data[1])
 
   LG = depla0 - KDbond_y0
   ra = find_point(0, len(lissage), lissage, depla, (lambda i: depla[i] > KDbond_y0 + 0.3 * LG))
@@ -144,6 +157,7 @@ def processRawFile(file, nbCoeff, data_curves):
   fout.write('Kdebond;' + str(KDbond) + "\n")
   fout.write('Kdebond_y0;' + str(KDbond_y0) + "\n")
   fout.write('depla0;' + str(depla0) + "\n")
+  fout.write('ext_mass;' + str(param_file_data[2]) + "\n")
   fout.write('LG;' + str(LG) + "\n")
   fout.write('KRes;' + str(KRes) + "\n")
   fout.write('PRes;' + str(PRes) + "\n")
@@ -161,6 +175,8 @@ def processRawFile(file, nbCoeff, data_curves):
   computed_params["nPRes"] = nPRes
   computed_params["aire1"] = aire1
   computed_params["aire2"] = aire2
+  computed_params["depla0"] = depla0
+  computed_params["ext_mass"] = float(param_file_data[2])
 
   units = dict()
   units["PMax"] = "N"
@@ -172,6 +188,8 @@ def processRawFile(file, nbCoeff, data_curves):
   units["nPRes"] = "N"
   units["aire1"] = "mm*mm"
   units["aire2"] = "mm*mm"
+  units["depla0"] = "mm"
+  units["ext_mass"] = "g"
 
 
   for i in range(len(aire)):
