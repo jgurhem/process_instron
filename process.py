@@ -156,37 +156,47 @@ def processRawFile(file, nbCoeff, data_curves, param_file_data):
   fout.write('depla0;' + str(depla0) + "\n")
   fout.write('ext_mass;' + str(param_file_data[2]) + "\n")
   fout.write('LG;' + str(LG) + "\n")
-  fout.write('KRes;' + str(KRes) + "\n")
-  fout.write('PRes;' + str(PRes) + "\n")
   fout.write('nKRes;' + str(nKRes) + "\n")
   fout.write('nPRes;' + str(nPRes) + "\n")
   fout.write('aire1;' + str(aire1) + "\n")
   fout.write('aire2;' + str(aire2) + "\n")
+  fout.write('s1;' + str(s1) + "\n")
+  fout.write('s2;' + str(s2) + "\n")
+  fout.write('d1;' + str(d1) + "\n")
+  fout.write('d2;' + str(d2) + "\n")
+  fout.write('d3;' + str(d3) + "\n")
   computed_params = dict()
   computed_params["PMax"] = PMax
   computed_params["Kbond"] = KBond
   computed_params["Kdebond"] = KDbond
-  computed_params["KRes"] = KRes
-  computed_params["PRes"] = PRes
   computed_params["nKRes"] = nKRes
   computed_params["nPRes"] = nPRes
   computed_params["aire1"] = aire1
   computed_params["aire2"] = aire2
   computed_params["depla0"] = depla0
   computed_params["ext_mass"] = float(param_file_data[2])
+  computed_params["s1"] = s1
+  computed_params["s2"] = s2
+  computed_params["d1"] = d1
+  computed_params["d2"] = d2
+  computed_params["d3"] = d3
+
 
   units = dict()
   units["PMax"] = "N"
   units["Kbond"] = "N/mm"
   units["Kdebond"] = "N/mm"
-  units["KRes"] = "N/mm"
-  units["PRes"] = "N"
   units["nKRes"] = "N/mm"
   units["nPRes"] = "N"
   units["aire1"] = "mm*mm"
   units["aire2"] = "mm*mm"
   units["depla0"] = "mm"
   units["ext_mass"] = "g"
+  units["s1"] = "mm"
+  units["s2"] = "mm"
+  units["d1"] = "mm"
+  units["d2"] = "mm"
+  units["d3"] = "mm"
 
 
   for i in range(len(aire)):
