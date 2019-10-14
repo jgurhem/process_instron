@@ -149,12 +149,16 @@ def processRawFile(file, nbCoeff, data_curves, param_file_data):
 
   fout = open(os.path.splitext(file)[0] + ".csv", 'w')
 
+  ext_mass = float(param_file_data[2])
+  ext_mass_on_depla0 = ext_mass / depla0
+
   fout.write('PMax;' + str(PMax) + "\n")
   fout.write('Kbond;' + str(KBond) + "\n")
   fout.write('Kdebond;' + str(KDbond) + "\n")
   fout.write('Kdebond_y0;' + str(KDbond_y0) + "\n")
   fout.write('depla0;' + str(depla0) + "\n")
-  fout.write('ext_mass;' + str(param_file_data[2]) + "\n")
+  fout.write('ext_mass;' + str(ext_mass) + "\n")
+  fout.write('ext_mass_on_depla0;' + str(ext_mass_on_depla0) + "\n")
   fout.write('LG;' + str(LG) + "\n")
   fout.write('nKRes;' + str(nKRes) + "\n")
   fout.write('nPRes;' + str(nPRes) + "\n")
@@ -174,12 +178,13 @@ def processRawFile(file, nbCoeff, data_curves, param_file_data):
   computed_params["aire1"] = aire1
   computed_params["aire2"] = aire2
   computed_params["depla0"] = depla0
-  computed_params["ext_mass"] = float(param_file_data[2])
+  computed_params["ext_mass"] = ext_mass
   computed_params["s1"] = s1
   computed_params["s2"] = s2
   computed_params["d1"] = d1
   computed_params["d2"] = d2
   computed_params["d3"] = d3
+  computed_params["ext_mass_on_depla0"] = ext_mass_on_depla0
 
 
   units = dict()
@@ -197,6 +202,7 @@ def processRawFile(file, nbCoeff, data_curves, param_file_data):
   units["d1"] = "mm"
   units["d2"] = "mm"
   units["d3"] = "mm"
+  units["ext_mass_on_depla0"] = "g/mm"
 
 
   for i in range(len(aire)):
