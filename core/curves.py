@@ -18,6 +18,7 @@ def make_curve(data_curves, directory):
   plt.savefig(fig_name)
   plt.close()
 
+def make_correlation(data_curves, directory):
   data_curves_keys = list(data_curves.keys())
   if len(data_curves_keys) < 2: return None
   param_keys = list(data_curves[data_curves_keys[0]][2].keys())
